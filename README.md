@@ -5,7 +5,7 @@ This is the code for the Paper: [Transition Information Enhanced Disentangled Gr
 The code contains the datasets that has been processed, i.e., Tmall,Nowplaying,Last.fm etc.
 Then you can run the file ````TIE-DGNN\main.py```` to train the model.  
 For example:
-```` python build_graph.py --dataset Tmall````  
+First, ```` python build_graph.py --dataset Tmall````, then
 ```` python main.py --dataset Tmall````
 The datasets we have uploaded have completed the build_graph steps.
 ## Requirements
