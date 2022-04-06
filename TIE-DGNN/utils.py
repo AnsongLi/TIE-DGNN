@@ -19,7 +19,7 @@ def split_validation(train_set, valid_portion):
 
 def handle_data(inputData, train_len=None):
     len_data = [len(nowData) for nowData in inputData]
-    if train_len is None:#这里好像是对训练长度有要求 trainlen感觉像是个参数
+    if train_len is None:
         max_len = max(len_data)
     else:
         max_len = train_len
@@ -28,7 +28,7 @@ def handle_data(inputData, train_len=None):
                for upois, le in zip(inputData, len_data)]
     us_msks = [[1] * le + [0] * (max_len - le) if le < max_len else [1] * max_len
                for le in len_data]
-    return us_pois, us_msks, max_len,len_data#把序列弄成等长，且弄一个掩码列表
+    return us_pois, us_msks, max_len,len_data
 
 
 def handle_adj(adj_dict, n_entity, sample_num, num_dict=None):
@@ -40,9 +40,9 @@ def handle_adj(adj_dict, n_entity, sample_num, num_dict=None):
         n_neighbor = len(neighbor)
         if n_neighbor == 0:
             continue
-        if n_neighbor >= sample_num:#之前的邻居个数只能保证最多只有12个
-            sampled_indices = np.random.choice(list(range(n_neighbor)), size=sample_num, replace=False)#将1-12随机打乱
-        else:#不够12个就可以随机重复生成一些
+        if n_neighbor >= sample_num:
+            sampled_indices = np.random.choice(list(range(n_neighbor)), size=sample_num, replace=False)
+        else:
             sampled_indices = np.random.choice(list(range(n_neighbor)), size=sample_num, replace=True)
         adj_entity[entity] = np.array([neighbor[i] for i in sampled_indices])
         num_entity[entity] = np.array([neighbor_weight[i] for i in sampled_indices])
@@ -86,10 +86,10 @@ class Data(Dataset):
         node = np.unique(u_input)
         items = node.tolist() + (max_n_node - len(node)) * [0]
         adj = np.zeros((max_n_node, max_n_node))
-        for i in np.arange(len(u_input) - 1):#遍历所有点
-            u = np.where(node == u_input[i])[0][0]#u-iput最开始没有0
+        for i in np.arange(len(u_input) - 1):
+            u = np.where(node == u_input[i])[0][0]
             adj[u][u] = 1
-            if u_input[i + 1] == 0:#遍历完所有的点提前跳出
+            if u_input[i + 1] == 0:
                 break
             v = np.where(node == u_input[i + 1])[0][0]
             if u == v or adj[u][v] == 4:
@@ -102,7 +102,7 @@ class Data(Dataset):
                 adj[u][v] = 2
                 adj[v][u] = 3
 
-        alias_inputs = [np.where(node == i)[0][0] for i in u_input]#记录session序列对应图中的序号（包括重复的）
+        alias_inputs = [np.where(node == i)[0][0] for i in u_input]
 
         return [torch.tensor(alias_inputs), torch.tensor(adj), torch.tensor(items),
                 torch.tensor(mask), torch.tensor(target), torch.tensor(u_input) , torch.tensor(len_data)]
