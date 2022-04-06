@@ -125,9 +125,9 @@ class Conv(nn.Module):
 
 
 
-    def route_emb_global(self,embedding):#解纠缠映射三维数据的代码
+    def route_emb_global(self,embedding):
         c_features = []
-        for i in range(self.channels):  # 对每个点的特征进行转换 原文公式1（在这要想如何实现很多的session转换，实现batch）
+        for i in range(self.channels): 
             # z = torch.mm(features, self.weight_list[i]) + self.bias_list[i]
             z = torch.matmul(embedding, self.weight_list[i]) + self.bias_list[i]
             z = F.normalize(z, dim=2)
@@ -136,7 +136,7 @@ class Conv(nn.Module):
 
     def route_embedding(self,embedding):
         c_features = []
-        for i in range(self.channels):  # 对每个点的特征进行转换 原文公式1（在这要想如何实现很多的session转换，实现batch）
+        for i in range(self.channels): 
             z = torch.matmul(embedding, self.weight_list[i]) + self.bias_list[i]
             z = F.normalize(z, dim=2)
             c_features.append(z)
