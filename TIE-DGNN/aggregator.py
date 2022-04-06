@@ -66,8 +66,7 @@ class GlobalAggregator_io(nn.Module):
         self.w_32 = nn.Parameter(torch.Tensor(2 * self.dim, self.dim))
         self.bias = nn.Parameter(torch.Tensor(self.dim))
         
-        
-        #self.bias_list = nn.Parameter(torch.empty(size=(1,1,self.dim), dtype=torch.float), requires_grad=True)
+    
 
     def forward(self, self_vectors, neighbor_vector, batch_size, masks, neighbor_weight, pos_weight,extra_vector=None):
         h=[]
@@ -75,7 +74,7 @@ class GlobalAggregator_io(nn.Module):
             if extra_vector is not None:
                 alpha = torch.matmul(
                                     torch.cat([extra_vector.unsqueeze(2).repeat(1, 1, neighbor_vector[(i+1)*3-3].shape[2], 1)*neighbor_vector[(i+1)*3-3], neighbor_weight[(i+1)*3-3].unsqueeze(-1),pos_weight[(i+1)*3-3]], -1),
-                                     self.w_11).squeeze(-1)#这squeeze是不是有点多余
+                                     self.w_11).squeeze(-1)
                 alpha = F.leaky_relu(alpha, negative_slope=0.2)
                 alpha = torch.matmul(alpha, self.w_21).squeeze(-1)
                 alpha = torch.softmax(alpha, -1).unsqueeze(-1)
@@ -83,7 +82,7 @@ class GlobalAggregator_io(nn.Module):
 
                 beta = torch.matmul(
                                     torch.cat([extra_vector.unsqueeze(2).repeat(1, 1, neighbor_vector[(i+1)*3-2].shape[2], 1)*neighbor_vector[(i+1)*3-2], neighbor_weight[(i+1)*3-2].unsqueeze(-1),pos_weight[(i+1)*3-2]], -1),
-                                     self.w_12).squeeze(-1)#这squeeze是不是有点多余
+                                     self.w_12).squeeze(-1)
                 beta = F.leaky_relu(beta, negative_slope=0.2)
                 beta = torch.matmul(beta, self.w_22).squeeze(-1)
                 beta = torch.softmax(beta, -1).unsqueeze(-1)
@@ -91,7 +90,7 @@ class GlobalAggregator_io(nn.Module):
 
                 thea = torch.matmul(
                                     torch.cat([extra_vector.unsqueeze(2).repeat(1, 1, neighbor_vector[(i+1)*3-1].shape[2], 1)*neighbor_vector[(i+1)*3-1], neighbor_weight[(i+1)*3-1].unsqueeze(-1),pos_weight[(i+1)*3-1]], -1),
-                                     self.w_13).squeeze(-1)#这squeeze是不是有点多余
+                                     self.w_13).squeeze(-1)
                 thea = F.leaky_relu(thea, negative_slope=0.2)
                 thea = torch.matmul(thea, self.w_23).squeeze(-1)
                 thea = torch.softmax(thea, -1).unsqueeze(-1)
@@ -101,7 +100,7 @@ class GlobalAggregator_io(nn.Module):
                 neighbor_vector_=neighbor_vector_in+neighbor_vector_out+neighbor_vector_io
             else:
                 neighbor_vector_ = torch.mean(neighbor_vector_, dim=2)
-            # self_vectors = F.dropout(self_vectors, 0.5, training=self.training)
+   
             output = torch.cat([self_vectors[i], neighbor_vector_], -1)
             output = F.dropout(output, self.dropout, training=self.training)
             output = torch.matmul(output, self.w_32)
