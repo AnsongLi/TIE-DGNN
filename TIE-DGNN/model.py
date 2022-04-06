@@ -234,13 +234,13 @@ class CombineGraph(Module):
         b=self.embedding.weight[1:]
         len_emb = torch.cat([self.len_embedding(lendata[i]).unsqueeze(0) for i in range(len(lendata))], dim=0)
         conloss = self.SSL(h_local, session_infos)
-        output=h_local+session_infos+self.bias_list
-        #output = h_local + session_infos
+        output=h_local+session_infos+self.bias_list #Tmall,Lastfm
+        #output = h_local + session_infos #Nowplaying
         score = torch.matmul(output, b.transpose(1, 0))
         return score,conloss
 
 
-    def forward_divide(self, inputs, adj, mask_item, item,lendata,alias_inputs):#inputs图上的点 items是session中的序列点
+    def forward_divide(self, inputs, adj, mask_item, item,lendata,alias_inputs):
         batch_size = inputs.shape[0]
         seqs_len = inputs.shape[1]
         h = self.embedding(inputs)
@@ -266,7 +266,7 @@ class CombineGraph(Module):
                 [weight_sample_i[j].view(batch_size, support_size) for j in range(len(weight_sample_i))])
             pos_neighbors.append([pos_sample_i[j].view(batch_size, support_size) for j in range(len(pos_sample_i))])
         h_cor = [self.embedding(i) for i in item_neighbors[0]][0]
-        cor_hidden = self.D_global_agg.rout_emb_cor(h_cor)  # 配cor
+        cor_hidden = self.D_global_agg.rout_emb_cor(h_cor)  
         h_global = self.D_global_agg(item_neighbors, self.embedding, weight_neighbors, seq_hidden_local, mask_item,
                                      pos_neighbors, self.pos_before,
                                      self.pos_after,self.pos_io)
