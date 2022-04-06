@@ -53,7 +53,7 @@ class Conv(nn.Module):
 
         entity_vectors_ = []
         for j in range(len(item_neighbors)):
-            entity_vectors_.append([embedding(i) for i in item_neighbors[j]])  # 第一个是本session图中点的的表示 第二个列表是图中点对应的邻居节点表示
+            entity_vectors_.append([embedding(i) for i in item_neighbors[j]])  
 
         entity_vectors_[0][0] = h
 
@@ -85,9 +85,6 @@ class Conv(nn.Module):
             entity_vectors_temp.append(entity_vectors_temp1)
         entity_vectors=entity_vectors_temp
 
-
-
-        # 解纠缠平均会话表示
         session_info = []
         item_emb = self.route_emb_global(seq_hidden_local)
         for i in range(len(item_emb)):
